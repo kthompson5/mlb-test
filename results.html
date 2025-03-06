@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Enter Results</title>
+    <script src="games.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+    </style>
+</head>
+<body>
+    <h1>Enter Game Results</h1>
+    <table id="resultsTable">
+        <tr>
+            <th>Game</th>
+            <th>Winner</th>
+        </tr>
+    </table>
+    <button onclick="saveResults()">Save Results</button>
+
+    <script>
+        const table = document.getElementById('resultsTable');
+        games.forEach(game => {
+            const row = table.insertRow();
+            row.insertCell().innerText = game.game;
+            const winnerCell = row.insertCell();
+            const select = document.createElement('select');
+            select.innerHTML = '<option value="">Select</option><option>Home</option><option>Away</option>';
+            winnerCell.appendChild(select);
+        });
+
+        function saveResults() {
+            const results = [];
+            for (let i = 1; i < table.rows.length; i++) {
+                results.push({
+                    game: table.rows[i].cells[0].innerText,
+                    winner: table.rows[i].cells[1].firstChild.value
+                });
+            }
+            localStorage.setItem('results', JSON.stringify(results));
+            alert('Results saved!');
+        }
+    </script>
+</body>
+</html>

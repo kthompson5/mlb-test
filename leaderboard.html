@@ -3,13 +3,32 @@
 <html lang="en">
 <head>
     <title>Leaderboard</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="games.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+    </style>
 </head>
 <body>
     <h1>Leaderboard</h1>
-    <img src="assets/img/leaderboard.gif" alt="Retro Leaderboard">
     <div id="leaderboard"></div>
-    <script src="assets/js/leaderboard.js"></script>
+
+    <script>
+        const players = ['Mom', 'Ben', 'Brody', 'Casey', 'Kelly'];
+        const results = JSON.parse(localStorage.getItem('results') || '[]');
+        
+        const scoreboard = players.map(player => {
+            const picks = JSON.parse(localStorage.getItem('picks_' + player) || '[]');
+            const correct = picks.filter(pick => {
+                const result = results.find(r => r.game === pick.game);
+                return result && result.winner === pick.pick;
+            }).length;
+            return { player, correct };
+        });
+
+        scoreboard.sort((a, b) => b.correct - a.correct);
+
+        const div = document.getElementById('leaderboard');
+        div.innerHTML = scoreboard.map(s => `<p>${s.player}: ${s.correct} correct</p>`).join('');
+    </script>
 </body>
 </html>

@@ -2,22 +2,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Thompson Family MLB Pick 'Em</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MLB Opening Day Pick 'Em</title>
+    <script src="games.js"></script>
+    <script src="sound.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        select, button { font-size: 16px; margin: 5px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; text-align: center; }
+    </style>
 </head>
 <body>
-    <h1>Thompson Family MLB Opening Day Pick 'Em</h1>
-    <form id="pickemForm">
-        <h2>March 27 Games</h2>
-        Yankees vs Astros: <select id="game1"><option>Yankees</option><option>Astros</option></select><br>
-        Cubs vs Rangers: <select id="game2"><option>Cubs</option><option>Rangers</option></select><br>
-        <h2>March 30 - Big Game (6 Points!)</h2>
-        Padres vs Braves: <select id="bigGame"><option>Padres</option><option>Braves</option></select><br>
-        <button type="button" onclick="savePicks()">Submit Picks</button>
-    </form>
-    <a href="leaderboard.html">View Leaderboard</a>
-    <audio id="batCrack" src="assets/img/bat-crack.mp3"></audio>
-    <script src="assets/js/pickem.js"></script>
+    <h1>MLB Opening Day Pick 'Em</h1>
+    <label for="playerSelect">Select Player:</label>
+    <select id="playerSelect">
+        <option value="">Select Player</option>
+        <option>Mom</option>
+        <option>Ben</option>
+        <option>Brody</option>
+        <option>Casey</option>
+        <option>Kelly</option>
+    </select>
+
+    <table id="gamesTable">
+        <tr>
+            <th>Game</th>
+            <th>Your Pick</th>
+        </tr>
+    </table>
+
+    <button onclick="savePicks()">Save Picks</button>
+
+    <script>
+        const table = document.getElementById('gamesTable');
+        games.forEach(game => {
+            const row = table.insertRow();
+            row.insertCell().innerText = game.game;
+            const pickCell = row.insertCell();
+            const select = document.createElement('select');
+            select.innerHTML = '<option value="">Select</option><option>Home</option><option>Away</option>';
+            pickCell.appendChild(select);
+        });
+
+        function savePicks() {
+            const player = document.getElementById('playerSelect').value;
+            if (!player) return alert('Select a player first!');
+            
+            const picks = [];
+            for (let i = 1; i < table.rows.length; i++) {
+                picks.push({
+                    game: table.rows[i].cells[0].innerText,
+                    pick: table.rows[i].cells[1].firstChild.value
+                });
+            }
+            
+            localStorage.setItem('picks_' + player, JSON.stringify(picks));
+            playSound();
+            alert('Picks saved for ' + player + '!');
+        }
+    </script>
 </body>
 </html>
